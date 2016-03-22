@@ -1,6 +1,8 @@
 // Segments in proc->gdt.
 #define NSEGS     7
+char history_buffer[164];
 
+extern char history_buffer[164];
 // Per-CPU state
 struct cpu {
   uchar id;                    // Local APIC ID; index into cpus[] below

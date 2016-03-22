@@ -20,7 +20,10 @@ int nextpid = 1;
 extern void forkret(void);
 extern void trapret(void);
 
+
+
 static void wakeup1(void *chan);
+
 
 void
 pinit(void)
@@ -592,7 +595,9 @@ int wait2(int *retime, int *rutime, int *stime){
 }
 
 int bla (char* lala){
-   return 0;
+    strncpy(history_buffer,lala,strlen(lala));
+    cprintf(lala);
+    return 0;
 }
 
 
