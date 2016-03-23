@@ -28,6 +28,11 @@ OBJS = \
 	vectors.o\
 	vm.o\
 
+SCHED_DEFAULT=0
+SCHED_FCFS=1
+SCHED_SML=2
+SCHED_DML=3
+
 # Cross-compiling (e.g., on Mac OS X)
 # TOOLPREFIX = i386-jos-elf
 
@@ -69,9 +74,26 @@ QEMU = $(shell if which qemu > /dev/null; \
 	echo "***" 1>&2; exit 1)
 endif
 
-ifndef 
-SCHEDFLAG=DEFAULT
+#set default scheduling policy if no policy was set
+SCHEDFLAG ?= DEFAULT
+
+ifeq ($(SCHEDFLAG),DEFAULT)
+CFLAGS += -D SCHEDFLAG=${SCHED_DEFAULT}
 endif
+
+ifeq ($(SCHEDFLAG),CFS)
+CFLAGS += -D SCHEDFLAG=${SCHED_CFS}
+endif
+
+ifeq ($(SCHEDFLAG),SML)
+CFLAGS += -D SCHEDFLAG=${SCHED_SML}
+endif
+
+ifeq ($(SCHEDFLAG),DML)
+CFLAGS += -D SCHEDFLAG=${SCHED_DML}
+endif
+
+
 
 CC = $(TOOLPREFIX)gcc
 AS = $(TOOLPREFIX)gas
@@ -81,7 +103,6 @@ OBJDUMP = $(TOOLPREFIX)objdump
 #CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -O2 -Wall -MD -ggdb -m32 -Werror -fno-omit-frame-pointer
 CFLAGS = -fno-pic -static -fno-builtin -fno-strict-aliasing -fvar-tracking -fvar-tracking-assignments -O0 -g -Wall -MD -gdwarf-2 -m32 -Werror -fno-omit-frame-pointer
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
-CFLAGS += -D SCHEDFLAG=0
 ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 # FreeBSD ld wants ``elf_i386_fbsd''
 LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null)
@@ -280,3 +301,4 @@ tar:
 	(cd /tmp; tar cf - xv6) | gzip >xv6-rev9.tar.gz  # the next one will be 9 (6/27/15)
 
 .PHONY: dist-test dist
+

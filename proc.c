@@ -6,7 +6,25 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-//#include "user.h"
+
+#ifdef SCHEDFLAG
+#if SCHEDFLAG==SCHED_DEFAULT
+  #define SCHED_POLICY SCHED_DEFAULT
+#endif
+
+#if SCHEDFLAG==SCHED_FCFS
+  #define SCHED_POLICY SCHED_FCFS
+#endif
+
+#if SCHEDFLAG==SCHED_SML
+  #define SCHED_POLICY SCHED_SML
+#endif
+
+#if SCHEDFLAG==SML
+  #define SCHED_POLICY SCHED_DML
+#endif
+#endif //ifdef SCHEDFLAG
+
 
 struct {
   struct spinlock lock;
@@ -294,13 +312,14 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
-     
+
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
       
 
       // Process is done running for now.
-      // It should have changed its p->state before coming back.
+      // It should have changed its 
+ before coming back.
       proc = 0;
     }
     release(&ptable.lock);

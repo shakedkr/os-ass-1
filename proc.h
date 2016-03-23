@@ -81,4 +81,5 @@ struct proc {
 //   text
 //   original data and bss
 //   fixed-size stack
-//   expandable heap
+//   expandable heap'
+
