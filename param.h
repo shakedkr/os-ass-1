@@ -12,3 +12,8 @@
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE       1000  // size of file system in blocks
 #define QUANTA 5
+
+#define SCHED_DEFAULT 0
+#define SCHED_FCFS 1
+#define SCHED_SML 2
+#define SCHED_DML 3
