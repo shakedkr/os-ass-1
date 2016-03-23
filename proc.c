@@ -7,20 +7,21 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
 #ifdef SCHEDFLAG
-#if SCHEDFLAG==SCHED_DEFAULT
+#if SCHEDFLAG==0
   #define SCHED_POLICY SCHED_DEFAULT
 #endif
 
-#if SCHEDFLAG==SCHED_FCFS
+#if SCHEDFLAG==1
   #define SCHED_POLICY SCHED_FCFS
 #endif
 
-#if SCHEDFLAG==SCHED_SML
+#if SCHEDFLAG==2
   #define SCHED_POLICY SCHED_SML
 #endif
 
-#if SCHEDFLAG==SML
+#if SCHEDFLAG==3
   #define SCHED_POLICY SCHED_DML
 #endif
 #endif //ifdef SCHEDFLAG
@@ -299,7 +300,8 @@ scheduler(void)
   for(;;){
     // Enable interrupts on this processor.
     sti();
-
+    if(SCHED_POLICY)
+        cprintf("lalala");
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
@@ -319,7 +321,7 @@ scheduler(void)
 
       // Process is done running for now.
       // It should have changed its 
- before coming back.
+
       proc = 0;
     }
     release(&ptable.lock);
