@@ -150,6 +150,8 @@ main(void)
   char buffer[128];
   //char bufferBackUp[128];
   //int currentPosition=0;  
+ 
+  
   
   // Assumes three file descriptors open.
   while((fd = open("console", O_RDWR)) >= 0){

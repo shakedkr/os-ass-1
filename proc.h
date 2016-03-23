@@ -3,6 +3,10 @@
 char history_buffer[16][128];
 
 extern char history_buffer[16][128];
+
+
+extern int historyCount;
+
 // Per-CPU state
 struct cpu {
   uchar id;                    // Local APIC ID; index into cpus[] below
