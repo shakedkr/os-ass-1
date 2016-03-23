@@ -124,6 +124,9 @@ void            yield(void);
 int             history(char*,int);
 int             wait2(int*,int*,int*);
 int             bla (char*);
+void            update_process_timing(void);
+
+
 // swtch.S
 void            swtch(struct context**, struct context*);
 

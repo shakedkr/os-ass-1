@@ -1,8 +1,8 @@
 // Segments in proc->gdt.
 #define NSEGS     7
-char history_buffer[164];
+char history_buffer[16][128];
 
-extern char history_buffer[164];
+extern char history_buffer[16][128];
 // Per-CPU state
 struct cpu {
   uchar id;                    // Local APIC ID; index into cpus[] below
@@ -74,9 +74,7 @@ struct proc {
   int retime; // ready (runnable)time
   int rutime; // running time
  
-  int startBeReadyAt;
-  int startToRuningAt;
-  int startToSleepAt;
+
 };
 
 // Process memory is laid out contiguously, low addresses first:

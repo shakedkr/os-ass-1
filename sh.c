@@ -3,6 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
+//#include "defs.h"
 
 // Parsed command representation
 #define EXEC  1
@@ -147,8 +148,9 @@ main(void)
   static char buf[100];
   int fd;
   char buffer[128];
-  char bufferBackUp[128];
-  int currentPosition=0;  
+  //char bufferBackUp[128];
+  //int currentPosition=0;  
+  
   // Assumes three file descriptors open.
   while((fd = open("console", O_RDWR)) >= 0){
     if(fd >= 3){
@@ -161,9 +163,12 @@ main(void)
   while(getcmd(buf, sizeof(buf)) >= 0){
       //strcpy(buffer+strlen(buf),buffer); //copy and leave space to new command
       
-      strcpy (buffer+currentPosition, buf ); 
-      currentPosition+= strlen(buf);
+      //strcpy (buffer+currentPosition, buf ); 
+      //currentPosition+= strlen(buf);
       
+      
+      /*add current buf*/
+      bla(buf);
       
       if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Clumsy but will have to do for now.
@@ -175,33 +180,23 @@ main(void)
     }
     
     int historyID;
-    int h;
+    int h,i;
     if (buf[0]=='h' && buf[1]=='i' && buf[2]=='s' && buf[3]=='t' && buf[4]=='o' && buf[5]=='r' && buf[6]=='y' && buf[7]==' '){
        
-      //  printf(1, "history id-buf[8]: %c \n" , *(buf+8));
-        //printf(1, "history id-sh: %d \n" , atoi (buf+8));
-       
-        /*
-        if (*(buffer+9) >= '0' && *(buffer+9) <= '9')
-            historyID = atoi(buffer+8)*10 + atoi(buffer+9);
-        else if (*(buffer+8) >= '0' && *(buffer+8) <= '9'){
-            historyID = atoi (buffer+8);
-            //printf(2,"lalal");
-        }
-        else if (*(buffer+8) == '\n')
-            historyID =15;
-       */
         historyID = atoi (buf+8);
-        strcpy(bufferBackUp,buffer);
-        h = history(bufferBackUp ,historyID); 
-               
-        if (h == -1)
-            printf(1,"no history for the given id \n");
-        else if (h== -2)
-            printf(1,"history illegal \n");
-        else if (h == 0)
-            printf(1,"%s",bufferBackUp);
-        
+                
+        i=historyID-1;
+        while (i>=0){       
+            h = history(buffer ,i);
+            
+            if (h == -1)
+                printf(1,"no history for the given id \n");
+            else if (h== -2)
+                printf(1,"history illegal \n");
+            else if (h == 0)    
+                printf(1,"%s",buffer);
+            i--;
+        }
         continue;
     }
     

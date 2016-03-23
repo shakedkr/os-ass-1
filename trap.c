@@ -14,6 +14,8 @@ extern uint vectors[];  // in vectors.S: array of 256 entry pointers
 struct spinlock tickslock;
 uint ticks;
 
+
+
 void
 tvinit(void)
 {
@@ -51,6 +53,7 @@ trap(struct trapframe *tf)
     if(cpu->id == 0){
       acquire(&tickslock);
       ticks++;
+      update_process_timing();
       wakeup(&ticks);
       release(&tickslock);
     }

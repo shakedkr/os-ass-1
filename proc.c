@@ -6,8 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
-
-
+//#include "user.h"
 
 struct {
   struct spinlock lock;
@@ -51,7 +50,7 @@ allocproc(void)
 
 found:
   p->state = EMBRYO;
-p->ctime = ticks;
+
   p->pid = nextpid++;
   release(&ptable.lock);
 
@@ -106,7 +105,7 @@ userinit(void)
   p->cwd = namei("/");
 
   p->state = RUNNABLE;
-  p->startBeReadyAt = ticks;
+  
 }
 
 // Grow current process's memory by n bytes.
@@ -168,11 +167,11 @@ fork(void)
   // lock to force the compiler to emit the np->state write last.
   acquire(&ptable.lock);
   np->state = RUNNABLE;
-  np->startBeReadyAt = ticks;
+  
   release(&ptable.lock);
   
   //add creation time
-  np->ctime = ticks; 
+  
   
   return pid;
 }
@@ -218,7 +217,7 @@ exit(void)
 
   // Jump into the scheduler, never to return.
   proc->state = ZOMBIE;
-  proc->rutime = proc->rutime + ticks - proc->startToRuningAt;
+  
   sched();
   panic("zombie exit");
 }
@@ -295,10 +294,10 @@ scheduler(void)
       proc = p;
       switchuvm(p);
       p->state = RUNNING;
-      p->startToRuningAt = ticks;
+     
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
-      p->rutime = p->rutime + ticks - p->startToRuningAt;
+      
 
       // Process is done running for now.
       // It should have changed its p->state before coming back.
@@ -336,10 +335,10 @@ yield(void)
   acquire(&ptable.lock);  //DOC: yieldlock
   
   //add runing time
-  proc->rutime = proc->rutime + ticks - proc->startToRuningAt; 
+  
   
   proc->state = RUNNABLE;
-  proc->startBeReadyAt = ticks;
+  
   sched();
   release(&ptable.lock);
 }
@@ -390,8 +389,7 @@ sleep(void *chan, struct spinlock *lk)
   // Go to sleep.
   proc->chan = chan;
   proc->state = SLEEPING;
-  proc->rutime = proc->rutime + ticks - proc->startToRuningAt;
-  proc->startToSleepAt =ticks;
+  
   sched();
 
   // Tidy up.
@@ -415,8 +413,7 @@ wakeup1(void *chan)
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan){
       p->state = RUNNABLE;
-      p->stime = p->stime + ticks - p->startToSleepAt; ////update sleep time 
-      p->startBeReadyAt = ticks;
+      
     }
 }
 
@@ -444,8 +441,7 @@ kill(int pid)
       // Wake process from sleep if necessary.
       if(p->state == SLEEPING){
         p->state = RUNNABLE;
-        p->stime = p->stime + ticks - p->startToSleepAt; ////update sleep time 
-      p->startBeReadyAt = ticks;
+      
       }
       release(&ptable.lock);
       return 0;
@@ -497,58 +493,22 @@ procdump(void)
 int history(char * buffer, int historyId)
 {
     
-    int count=0,i=0;
-    if(historyId<1 || historyId >15)
+    
+    if(historyId<0 || historyId >15)
         return -2;
     
-    //find historyID place
-    while (*(buffer+i)!=0 && count<historyId){
-        if(*(buffer+i)=='\n')
-            count++;
-        i++;
-    }
-
-    cprintf("cpunt= %d historyid= %d i= %d \n" ,count,historyId,i);
+    //cprintf("cpunt= %d historyid= %d i= %d \n" ,count,historyId,i);
     
-    if (count!=historyId)
+    else if (history_buffer[historyId]== 0)
         return -1;
         
-    buffer = buffer+i;
-    cprintf("buffer= \n %s \n\n" ,buffer);   
+    //cprintf("buffer=  %s \n" ,buffer);   
+    
+    strncpy(buffer,history_buffer[historyId],128);
+    
     return 0;
-    
-    /*
-    int countHistoryNumber=0,count=0;
-    int i=0;
-    while (*(buffer+i)!=0 ){
-        if (*(buffer+i)=='\n')
-            countHistoryNumber++;
-        i++;
-    
-    }
-   if (historyId<1 || historyId >15)
-        return -2;
-    else if (historyId>countHistoryNumber)
-        return -1;
-    else{
-        //calculate buffer place
-        i=0;
-        while (*(buffer+i)!=0 && count<historyId){
-        if (*(buffer+i)=='\n')
-            count++;
-        i++;
-        } 
-       // cprintf("count= %d" ,count);
-        //cprintf("i= %d" ,i);
-        //strcpy(buffer,(buffer+i));
-        buffer = buffer+ i;
-        return 0;
-    }
-    
-    
-   // cprintf("%s" ,buffer);
-    return 0;
-     */
+ 
+ 
 }
 
 
@@ -576,9 +536,7 @@ int wait2(int *retime, int *rutime, int *stime){
         p->name[0] = 0;
         p->killed = 0;
         release(&ptable.lock);
-        retime = &p->retime;
-        rutime = &p->rutime;
-        stime = &p->stime;
+        
         return pid;
       }
     }
@@ -594,14 +552,42 @@ int wait2(int *retime, int *rutime, int *stime){
   }
 }
 
+/*add history line to buffer*/
 int bla (char* lala){
-    strncpy(history_buffer,lala,strlen(lala));
-    cprintf(lala);
+    int i=14;
+    //copy buffer to end. leave space at buffer[0]]
+    while (i>=0){
+        strncpy(history_buffer[i+1],history_buffer[i],128);
+        i--;
+    }
+        
+    strncpy(history_buffer[0],lala,128);
     return 0;
 }
 
 
-
+void
+update_process_timing(void)
+{
+  struct proc* p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    switch(p->state)
+    {
+      case RUNNING:
+        p->rutime++;
+            break;
+      case RUNNABLE:
+        p->retime++;
+            break;
+      case SLEEPING:
+        p->stime++;
+            break;
+      default :
+        break;
+    }
+  }
+}
 
 
 
