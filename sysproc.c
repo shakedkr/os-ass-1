@@ -95,7 +95,7 @@ int sys_history(void)
 {
     char *buffer;
     int historyId;
-     if(argstr(0, &buffer) < 0 || argint(1,&historyId) < 0)
+    if(argstr(0, &buffer) < 0 || argint(1,&historyId) < 0)
          return -1;
     return history(buffer,historyId);
 }
@@ -124,13 +124,13 @@ int sys_yield(){
 
 
 int sys_bla (void){
-  /* 
+   
     char* buffer;
     if (argptr(0,&buffer,128)<0)
         return -1;
     return bla(buffer);
-*/
-    return 0;
+
+    
 }
 
 
