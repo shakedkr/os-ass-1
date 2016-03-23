@@ -7,6 +7,24 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#ifdef SCHEDFLAG
+#if SCHEDFLAG==SCHED_DEFAULT
+  #define SCHED_POLICY SCHED_DEFAULT
+#endif
+
+#if SCHEDFLAG==SCHED_FCFS
+  #define SCHED_POLICY SCHED_FCFS
+#endif
+
+#if SCHEDFLAG==SCHED_SML
+  #define SCHED_POLICY SCHED_SML
+#endif
+
+#if SCHEDFLAG==SML
+  #define SCHED_POLICY SCHED_DML
+#endif
+#endif //ifdef SCHEDFLAG
+
 
 
 struct {
@@ -296,6 +314,8 @@ scheduler(void)
       switchuvm(p);
       p->state = RUNNING;
       p->startToRuningAt = ticks;
+      
+
       swtch(&cpu->scheduler, proc->context);
       switchkvm();
       p->rutime = p->rutime + ticks - p->startToRuningAt;
