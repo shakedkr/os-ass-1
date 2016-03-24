@@ -123,8 +123,17 @@ void            wakeup(void*);
 void            yield(void);
 int             history(char*,int);
 int             wait2(int*,int*,int*);
-int             bla (char*);
+int             add_history (char*);
 void            update_process_timing(void);
+void            scheduler_fcfs(void) __attribute__((noreturn));
+void            scheduler_default(void) __attribute__((noreturn));
+void            scheduler_sml(void) __attribute__((noreturn));
+void            scheduler_dml(void) __attribute__((noreturn));
+int             set_prio(int );
+
+
+
+
 
 
 // swtch.S

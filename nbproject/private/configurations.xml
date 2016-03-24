@@ -64,6 +64,8 @@
       <in>proc.h</in>
       <in>rm.asm</in>
       <in>rm.c</in>
+      <in>sanity.asm</in>
+      <in>sanity.c</in>
       <in>sh.asm</in>
       <in>sh.c</in>
       <in>spinlock.c</in>

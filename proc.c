@@ -8,21 +8,6 @@
 #include "spinlock.h"
 
 
-#ifdef SCHEDFLAG
-    #if SCHEDFLAG==SCHED_DEFAULT
-    #define SCHED_POLICY SCHED_DEFAULT //SCHED_DEFAULT
-    #endif
-
-    #if SCHEDFLAG==SCHED_FCFS
-    #define SCHED_POLICY SCHED_FCFS // SCHED_FCFS
-    #endif
-
-    #if SCHEDFLAG==SCHED_SML
-    #define SCHED_POLICY SCHED_SML //SCHED_SML
-    #endif
-
-
-#endif //ifdef SCHEDFLAG
 
 int historyCount = 0;
 
@@ -127,6 +112,7 @@ userinit(void) {
     p->stime = 0;
     p->retime =0;
     p->rutime =0;
+    p->priority =2;
 
 }
 
@@ -197,6 +183,7 @@ fork(void) {
     np->stime = 0;
     np->retime =0;
     np->rutime =0;
+    np->priority = proc->priority;
 
     return pid;
 }
@@ -299,8 +286,26 @@ wait(void) {
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 
+void 
+scheduler (void){
+    if (SCHED_POLICY == SCHED_DEFAULT)
+       scheduler_default();
+    if (SCHED_POLICY == SCHED_FCFS)
+        scheduler_fcfs();
+    if(SCHED_POLICY==SCHED_SML)
+        scheduler_sml();
+    if(SCHED_POLICY==SCHED_DML)
+        scheduler_dml();
+}
+
 void
-scheduler(void) {
+scheduler_dml(void) {
+   scheduler_sml();
+}
+
+
+void
+scheduler_default(void) {
       
     struct proc *p;
     
@@ -347,11 +352,19 @@ scheduler_fcfs(void) {
 
         // Loop over process table looking for process to run.
         acquire(&ptable.lock);
-        pMinCtime = ptable.proc;
+       
+        //find first runnable process
+         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if ( p->state ==RUNNABLE){
+                pMinCtime = p;
+                break;
+            }
+        }
+    
 
         /* find proccess with min creation time*/
         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-            if (p->ctime < pMinCtime->ctime)
+            if (p->ctime < pMinCtime->ctime && p->state ==RUNNABLE)
                 pMinCtime = p;
         }
 
@@ -368,6 +381,57 @@ scheduler_fcfs(void) {
 
     }
 
+}
+
+
+void
+scheduler_sml(void) {
+      
+    struct proc *p;
+    
+    for (;;) {
+        sti();
+        acquire(&ptable.lock);
+        int found=0;
+        //search with priority 3
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==3 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        //search with priority 2
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==2 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        //search with priority 1
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==1 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        // Switch to chosen process.  It is the process's job
+            // to release ptable.lock and then reacquire it
+            // before jumping back to us.
+        if (found==1){
+            proc = p;
+            switchuvm(p);
+            p->state = RUNNING;
+
+            swtch(&cpu->scheduler, proc->context);
+            switchkvm();
+
+
+            // Process is done running for now.
+            // It should have changed its 
+
+            proc = 0;
+            
+        }
+            release(&ptable.lock);
+            
+    }
 }
 
 
@@ -475,6 +539,8 @@ wakeup1(void *chan) {
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         if (p->state == SLEEPING && p->chan == chan) {
             p->state = RUNNABLE;
+            if(SCHED_POLICY==SCHED_DML)
+                p->priority = 3; 
 
         }
 }
@@ -503,6 +569,8 @@ kill(int pid) {
             // Wake process from sleep if necessary.
             if (p->state == SLEEPING) {
                 p->state = RUNNABLE;
+                if(SCHED_POLICY==SCHED_DML)
+                   p->priority = 3; 
 
             }
             release(&ptable.lock);
@@ -620,7 +688,7 @@ int wait2(int *retime, int *rutime, int *stime) {
 }
 
 /*add history line to buffer*/
-int bla(char* lala) {
+int add_history(char* newHistory) {
     if (historyCount < 15)
         historyCount++;
     
@@ -631,7 +699,15 @@ int bla(char* lala) {
         i--;
     }
 
-    strncpy(history_buffer[0], lala, 128);
+    strncpy(history_buffer[0], newHistory, 128);
+    return 0;
+}
+
+int set_prio(int priority){
+    if (priority<0 || priority >3)
+        return -1;
+    proc->priority = priority;
+          
     return 0;
 }
 
