@@ -7,22 +7,21 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
 #ifdef SCHEDFLAG
-#if SCHEDFLAG==SCHED_DEFAULT
-#define SCHED_POLICY 0 //SCHED_DEFAULT
-#endif
+    #if SCHEDFLAG==SCHED_DEFAULT
+    #define SCHED_POLICY SCHED_DEFAULT //SCHED_DEFAULT
+    #endif
 
-#if SCHEDFLAG==SCHED_FCFS
-#define SCHED_POLICY 1 // SCHED_FCFS
-#endif
+    #if SCHEDFLAG==SCHED_FCFS
+    #define SCHED_POLICY SCHED_FCFS // SCHED_FCFS
+    #endif
 
-#if SCHEDFLAG==SCHED_SML
-#define SCHED_POLICY 2 //SCHED_SML
-#endif
+    #if SCHEDFLAG==SCHED_SML
+    #define SCHED_POLICY SCHED_SML //SCHED_SML
+    #endif
 
-#if SCHEDFLAG==SML
-#define SCHED_POLICY 3 //SCHED_DML
-#endif
+
 #endif //ifdef SCHEDFLAG
 
 int historyCount = 0;
@@ -44,6 +43,7 @@ static void wakeup1(void *chan);
 
 void
 pinit(void) {
+    if (SCHEDFLAG ==0){}
     initlock(&ptable.lock, "ptable");
 }
 
@@ -301,8 +301,9 @@ wait(void) {
 
 void
 scheduler(void) {
+      
     struct proc *p;
-
+    
     for (;;) {
         // Enable interrupts on this processor.
         sti();
@@ -397,7 +398,6 @@ yield(void) {
     acquire(&ptable.lock); //DOC: yieldlock
 
     //add runing time
-
 
     proc->state = RUNNABLE;
 

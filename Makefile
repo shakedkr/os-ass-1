@@ -37,7 +37,7 @@ SCHED_DML=3
 # TOOLPREFIX = i386-jos-elf
 
 # Using native tools (e.g., on X86 Linux)
-#TOOLPREFIX = 
+#TOOLPREFIX =
 
 # Try to infer the correct TOOLPREFIX if not set
 ifndef TOOLPREFIX
@@ -74,26 +74,6 @@ QEMU = $(shell if which qemu > /dev/null; \
 	echo "***" 1>&2; exit 1)
 endif
 
-#set default scheduling policy if no policy was set
-SCHEDFLAG ?= DEFAULT
-
-ifeq ($(SCHEDFLAG),DEFAULT)
-CFLAGS += -D SCHEDFLAG=${SCHED_DEFAULT}
-endif
-
-ifeq ($(SCHEDFLAG),CFS)
-CFLAGS += -D SCHEDFLAG=${SCHED_CFS}
-endif
-
-ifeq ($(SCHEDFLAG),SML)
-CFLAGS += -D SCHEDFLAG=${SCHED_SML}
-endif
-
-ifeq ($(SCHEDFLAG),DML)
-CFLAGS += -D SCHEDFLAG=${SCHED_DML}
-endif
-
-
 
 CC = $(TOOLPREFIX)gcc
 AS = $(TOOLPREFIX)gas
@@ -106,6 +86,31 @@ CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 &
 ASFLAGS = -m32 -gdwarf-2 -Wa,-divide
 # FreeBSD ld wants ``elf_i386_fbsd''
 LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null)
+
+
+# Scheduling policy
+
+#set default scheduling policy if no policy was set
+SCHEDFLAG ?= DEFAULT
+
+ifeq ($(SCHEDFLAG),DEFAULT)
+CFLAGS += -D SCHEDFLAG=${SCHED_DEFAULT}
+endif
+
+ifeq ($(SCHEDFLAG),FCFS)
+CFLAGS += -D SCHEDFLAG=${SCHED_FCFS}
+endif
+
+ifeq ($(SCHEDFLAG),SML)
+CFLAGS += -D SCHEDFLAG=${SCHED_SML}
+endif
+
+ifeq ($(SCHEDFLAG),DML)
+CFLAGS += -D SCHEDFLAG=${SCHED_DML}
+endif
+
+
+# end Scheduling policy
 
 xv6.img: bootblock kernel fs.img
 	dd if=/dev/zero of=xv6.img count=10000
@@ -123,7 +128,7 @@ bootblock: bootasm.S bootmain.c
 	$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o bootblock.o bootasm.o bootmain.o
 	$(OBJDUMP) -S bootblock.o > bootblock.asm
 	$(OBJCOPY) -S -O binary -j .text bootblock.o bootblock
-	./sign.pl bootblock
+	perl sign.pl bootblock
 
 entryother: entryother.S
 	$(CC) $(CFLAGS) -fno-pic -nostdinc -I. -c entryother.S
@@ -199,6 +204,7 @@ UPROGS=\
 	_wc\
 	_zombie\
 
+
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
 
@@ -210,7 +216,7 @@ clean:
 	initcode initcode.out kernel xv6.img fs.img kernelmemfs mkfs \
 	.gdbinit \
 	$(UPROGS)
-
+	
 # make a printout
 FILES = $(shell grep -v '^\#' runoff.list)
 PRINT = runoff.list runoff.spec README toc.hdr toc.ftr $(FILES)
@@ -222,11 +228,9 @@ xv6.pdf: $(PRINT)
 print: xv6.pdf
 
 # run in emulators
-
 bochs : fs.img xv6.img
 	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
 	bochs -q
-
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
 # QEMU's gdb stub command line changed in 0.11
@@ -257,13 +261,13 @@ qemu-gdb: fs.img xv6.img .gdbinit
 qemu-nox-gdb: fs.img xv6.img .gdbinit
 	@echo "*** Now run 'gdb'." 1>&2
 	$(QEMU) -nographic $(QEMUOPTS) -S $(QEMUGDB)
-
+	
 # CUT HERE
 # prepare dist for students
 # after running make dist, probably want to
 # rename it to rev0 or rev1 or so on and then
-# check in that version.
-
+# check in that version.	
+	
 EXTRA=\
 	mkfs.c ulib.c user.h cat.c echo.c forktest.c grep.c kill.c\
 	ln.c ls.c mkdir.c rm.c stressfs.c usertests.c wc.c zombie.c\
@@ -301,4 +305,3 @@ tar:
 	(cd /tmp; tar cf - xv6) | gzip >xv6-rev9.tar.gz  # the next one will be 9 (6/27/15)
 
 .PHONY: dist-test dist
-
