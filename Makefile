@@ -92,6 +92,7 @@ LDFLAGS += -m $(shell $(LD) -V | grep elf_i386 2>/dev/null)
 # Scheduling policy
 
 #set default scheduling policy if no policy was set
+SCHEDFLAG ?= DEFAULT
 
 ifeq ($(SCHEDFLAG),DEFAULT)
 CFLAGS += -D SCHEDFLAG=${SCHED_DEFAULT}
@@ -239,7 +240,7 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 	then echo "-gdb tcp::$(GDBPORT)"; \
 	else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
-CPUS := 2
+CPUS := 1
 endif
 QEMUOPTS = -hdb fs.img xv6.img -smp $(CPUS) -m 512 $(QEMUEXTRA)
 

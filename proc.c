@@ -184,7 +184,7 @@ fork(void) {
     np->retime =0;
     np->rutime =0;
     np->priority = proc->priority;
-
+    
     return pid;
 }
 
@@ -319,6 +319,22 @@ struct proc * getFCFSproc()
   return res;
 }
 
+struct proc * getDMLproc()
+{
+  struct proc *p = 0;
+  struct proc * res = 0;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+
+    if(p->state == RUNNABLE &&  ((res == 0) || (p->priority > res->priority)))
+    {
+      res = p;
+    }
+  }
+
+  return res;
+}
+
 void
 scheduler_default(void) {
       
@@ -395,50 +411,36 @@ scheduler_fcfs(void) {
 void
 scheduler_sml(void) {
       
-    struct proc *p;
-    
+     struct proc *p;
+
+
     for (;;) {
+        // Enable interrupts on this processor.
         sti();
+
+        // Loop over process table looking for process to run.
         acquire(&ptable.lock);
-        int found=0;
-        //search with priority 3
-        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
-            if (p->priority==3 && p->state == RUNNABLE)
-                found++;
-       }
+       
+        //find first runnable process
+         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if ( p->state !=RUNNABLE)
+                continue;
+
+        /* find proccess with min creation time*/
         
-        //search with priority 2
-        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
-            if (p->priority==2 && p->state == RUNNABLE)
-                found++;
-       }
-        
-        //search with priority 1
-        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
-            if (p->priority==1 && p->state == RUNNABLE)
-                found++;
-       }
-        
-        // Switch to chosen process.  It is the process's job
-            // to release ptable.lock and then reacquire it
-            // before jumping back to us.
-        if (found==1){
-            proc = p;
-            switchuvm(p);
-            p->state = RUNNING;
+            p=getDMLproc();
 
-            swtch(&cpu->scheduler, proc->context);
-            switchkvm();
+        proc = p;
+        switchuvm(p);
+        proc->state = RUNNING;
 
+        swtch(&cpu->scheduler, proc->context);
+        switchkvm();
 
-            // Process is done running for now.
-            // It should have changed its 
+        proc = 0;
+         }
+        release(&ptable.lock);
 
-            proc = 0;
-            
-        }
-            release(&ptable.lock);
-            
     }
 }
 
@@ -675,7 +677,7 @@ int wait2(int *retime, int *rutime, int *stime) {
                 p->killed = 0;
                 release(&ptable.lock);
                 *retime = p->retime;
-                *rutime = p->retime;
+                *rutime = p->rutime;
                 *stime = p->stime;   
                 return pid;
             }
@@ -714,8 +716,9 @@ int add_history(char* newHistory) {
 int set_prio(int priority){
     if (priority<0 || priority >3)
         return -1;
+    acquire(&ptable.lock);
     proc->priority = priority;
-          
+    release(&ptable.lock);
     return 0;
 }
 
