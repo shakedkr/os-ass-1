@@ -108,10 +108,10 @@
         </cTool>
       </item>
       <item path="console.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="echo.c" ex="false" tool="0" flavor2="2">
@@ -122,10 +122,10 @@
         </cTool>
       </item>
       <item path="exec.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="file.c" ex="false" tool="0" flavor2="2">
@@ -143,10 +143,10 @@
         </cTool>
       </item>
       <item path="fs.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="grep.c" ex="false" tool="0" flavor2="2">
@@ -157,10 +157,10 @@
         </cTool>
       </item>
       <item path="ide.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="init.c" ex="false" tool="0" flavor2="2">
@@ -227,10 +227,10 @@
         </cTool>
       </item>
       <item path="main.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="mkdir.c" ex="false" tool="0" flavor2="2">
@@ -243,10 +243,10 @@
       <item path="mkfs.c" ex="false" tool="0" flavor2="2">
       </item>
       <item path="mp.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="picirq.c" ex="false" tool="0" flavor2="2">
@@ -257,10 +257,10 @@
         </cTool>
       </item>
       <item path="pipe.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="printf.c" ex="false" tool="0" flavor2="2">
@@ -272,9 +272,6 @@
       </item>
       <item path="proc.c" ex="false" tool="0" flavor2="2">
         <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
         </cTool>
       </item>
       <item path="rm.c" ex="false" tool="0" flavor2="2">
@@ -285,17 +282,17 @@
         </cTool>
       </item>
       <item path="sh.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="spinlock.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="stressfs.c" ex="false" tool="0" flavor2="2">
@@ -313,24 +310,24 @@
         </cTool>
       </item>
       <item path="syscall.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="sysfile.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="sysproc.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="timer.c" ex="false" tool="0" flavor2="2">
@@ -341,17 +338,17 @@
         </cTool>
       </item>
       <item path="trap.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="uart.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="ulib.c" ex="false" tool="0" flavor2="2">
@@ -376,10 +373,10 @@
         </cTool>
       </item>
       <item path="vm.c" ex="false" tool="0" flavor2="2">
-        <cTool flags="0">
-          <preprocessorList>
-            <Elem>SCHEDFLAG=0</Elem>
-          </preprocessorList>
+        <cTool flags="1">
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
         </cTool>
       </item>
       <item path="wc.c" ex="false" tool="0" flavor2="2">
