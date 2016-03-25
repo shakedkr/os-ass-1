@@ -3,7 +3,7 @@
 #include "types.h"
 #include "user.h"
 #include "fcntl.h"
-//#include "defs.h"
+
 
 // Parsed command representation
 #define EXEC  1
@@ -170,7 +170,7 @@ main(void)
       
       
       /*add current buf*/
-      bla(buf);
+      add_history(buf);
       
       if(buf[0] == 'c' && buf[1] == 'd' && buf[2] == ' '){
       // Clumsy but will have to do for now.

@@ -123,17 +123,22 @@ int sys_yield(){
 }
 
 
-int sys_bla (void){
+int sys_add_history (void){
    
     char* buffer;
     if (argptr(0,&buffer,128)<0)
         return -1;
-    return bla(buffer);
+    return add_history(buffer);
 
     
 }
 
+int sys_set_prio(void){
+  int p;
 
-
+  if(argint(0, &p) < 0)
+    return -1;
+  return set_prio(p);
+}
 
 

@@ -23,4 +23,5 @@
 #define SYS_history 22
 #define SYS_wait2 23
 #define SYS_yield 24
-#define SYS_bla 25
+#define SYS_add_history 25
+#define SYS_set_prio 26

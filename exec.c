@@ -18,6 +18,9 @@ exec(char *path, char **argv)
   struct proghdr ph;
   pde_t *pgdir, *oldpgdir;
 
+  if(SCHED_POLICY==SCHED_DML)
+         proc->priority = 2;
+  
   begin_op();
   if((ip = namei(path)) == 0){
     end_op();

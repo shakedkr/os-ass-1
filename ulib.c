@@ -92,6 +92,27 @@ atoi(const char *s)
   return n;
 }
 
+/* return atoi calaulate. return -1 if not succefull*/
+int 
+my_atoi(const char* number)
+{
+    int i = 0;
+    int n=0;
+    
+    for (; (number+i) != 0; i++)
+    {
+        if ( *(number+i) > '9' || *(number+i) < '0')
+            return -1;
+        else
+            n= n*10 + *(number+i) -'0';
+              
+    }
+    return n;
+}
+
+
+
+
 void*
 memmove(void *vdst, void *vsrc, int n)
 {

@@ -77,7 +77,7 @@ struct proc {
   int stime; // sleeping time
   int retime; // ready (runnable)time
   int rutime; // running time
- 
+  uint priority;
 
 };
 
@@ -87,3 +87,19 @@ struct proc {
 //   fixed-size stack
 //   expandable heap'
 
+
+#ifdef SCHEDFLAG
+    #if SCHEDFLAG==SCHED_DEFAULT
+    #define SCHED_POLICY SCHED_DEFAULT //SCHED_DEFAULT
+    #endif
+
+    #if SCHEDFLAG==SCHED_FCFS
+    #define SCHED_POLICY SCHED_FCFS // SCHED_FCFS
+    #endif
+
+    #if SCHEDFLAG==SCHED_SML
+    #define SCHED_POLICY SCHED_SML //SCHED_SML
+    #endif
+
+
+#endif //ifdef SCHEDFLAG

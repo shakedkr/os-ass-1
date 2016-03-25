@@ -8,23 +8,6 @@
 #include "spinlock.h"
 
 
-#ifdef SCHEDFLAG
-#if SCHEDFLAG==SCHED_DEFAULT
-#define SCHED_POLICY 0 //SCHED_DEFAULT
-#endif
-
-#if SCHEDFLAG==SCHED_FCFS
-#define SCHED_POLICY 1 // SCHED_FCFS
-#endif
-
-#if SCHEDFLAG==SCHED_SML
-#define SCHED_POLICY 2 //SCHED_SML
-#endif
-
-#if SCHEDFLAG==SML
-#define SCHED_POLICY 3 //SCHED_DML
-#endif
-#endif //ifdef SCHEDFLAG
 
 int historyCount = 0;
 
@@ -45,6 +28,7 @@ static void wakeup1(void *chan);
 
 void
 pinit(void) {
+    if (SCHEDFLAG ==0){}
     initlock(&ptable.lock, "ptable");
 }
 
@@ -128,6 +112,7 @@ userinit(void) {
     p->stime = 0;
     p->retime =0;
     p->rutime =0;
+    p->priority =2;
 
 }
 
@@ -198,6 +183,7 @@ fork(void) {
     np->stime = 0;
     np->retime =0;
     np->rutime =0;
+    np->priority = proc->priority;
 
     return pid;
 }
@@ -300,38 +286,44 @@ wait(void) {
 //  - eventually that process transfers control
 //      via swtch back to the scheduler.
 
+void 
+scheduler (void){
+    if (SCHED_POLICY == SCHED_DEFAULT)
+       scheduler_default();
+    if (SCHED_POLICY == SCHED_FCFS)
+        scheduler_fcfs();
+    if(SCHED_POLICY==SCHED_SML)
+        scheduler_sml();
+    if(SCHED_POLICY==SCHED_DML)
+        scheduler_dml();
+}
+
 void
-scheduler(void) {
-    struct proc *p;
+scheduler_dml(void) {
+   scheduler_sml();
+}
 
-<<<<<<< HEAD
-  for(;;){
-    // Enable interrupts on this processor.
-    sti();
-    if(SCHED_POLICY)
-        cprintf("lalala");
-    // Loop over process table looking for process to run.
-    acquire(&ptable.lock);
-    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-      if(p->state != RUNNABLE)
-        continue;
+struct proc * getFCFSproc()
+{
+  struct proc *p = 0;
+  struct proc * res = 0;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
 
-      // Switch to chosen process.  It is the process's job
-      // to release ptable.lock and then reacquire it
-      // before jumping back to us.
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+    if(p->state == RUNNABLE &&  ((res == 0) || (p->ctime) < (res->ctime)))
+    {
+      res = p;
+    }
+  }
 
-      swtch(&cpu->scheduler, proc->context);
-      switchkvm();
+  return res;
+}
+
+void
+scheduler_default(void) {
       
-
-      // Process is done running for now.
-      // It should have changed its 
-
-      proc = 0;
-=======
+    struct proc *p;
+    
     for (;;) {
         // Enable interrupts on this processor.
         sti();
@@ -367,36 +359,87 @@ void
 scheduler_fcfs(void) {
 
     struct proc *p;
-    struct proc *pMinCtime;
 
+    
     for (;;) {
         // Enable interrupts on this processor.
         sti();
 
         // Loop over process table looking for process to run.
         acquire(&ptable.lock);
-        pMinCtime = ptable.proc;
+       
+        //find first runnable process
+         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+            if ( p->state !=RUNNABLE)
+                continue;
 
         /* find proccess with min creation time*/
-        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
-            if (p->ctime < pMinCtime->ctime)
-                pMinCtime = p;
-        }
+        p=getFCFSproc();
 
-        proc = pMinCtime;
-        switchuvm(pMinCtime);
-        pMinCtime->state = RUNNING;
+        proc = p;
+        switchuvm(p);
+        proc->state = RUNNING;
 
         swtch(&cpu->scheduler, proc->context);
         switchkvm();
 
         proc = 0;
-
+         }
         release(&ptable.lock);
 
->>>>>>> 703d7cd20fa6ea86d517d93c7f96ec6c922e451a
     }
 
+}
+
+
+void
+scheduler_sml(void) {
+      
+    struct proc *p;
+    
+    for (;;) {
+        sti();
+        acquire(&ptable.lock);
+        int found=0;
+        //search with priority 3
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==3 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        //search with priority 2
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==2 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        //search with priority 1
+        for (p = ptable.proc; p < &ptable.proc[NPROC] && found==0 ; p++) {
+            if (p->priority==1 && p->state == RUNNABLE)
+                found++;
+       }
+        
+        // Switch to chosen process.  It is the process's job
+            // to release ptable.lock and then reacquire it
+            // before jumping back to us.
+        if (found==1){
+            proc = p;
+            switchuvm(p);
+            p->state = RUNNING;
+
+            swtch(&cpu->scheduler, proc->context);
+            switchkvm();
+
+
+            // Process is done running for now.
+            // It should have changed its 
+
+            proc = 0;
+            
+        }
+            release(&ptable.lock);
+            
+    }
 }
 
 
@@ -427,7 +470,6 @@ yield(void) {
     acquire(&ptable.lock); //DOC: yieldlock
 
     //add runing time
-
 
     proc->state = RUNNABLE;
 
@@ -505,6 +547,8 @@ wakeup1(void *chan) {
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
         if (p->state == SLEEPING && p->chan == chan) {
             p->state = RUNNABLE;
+            if(SCHED_POLICY==SCHED_DML)
+                p->priority = 3; 
 
         }
 }
@@ -533,6 +577,8 @@ kill(int pid) {
             // Wake process from sleep if necessary.
             if (p->state == SLEEPING) {
                 p->state = RUNNABLE;
+                if(SCHED_POLICY==SCHED_DML)
+                   p->priority = 3; 
 
             }
             release(&ptable.lock);
@@ -650,7 +696,7 @@ int wait2(int *retime, int *rutime, int *stime) {
 }
 
 /*add history line to buffer*/
-int bla(char* lala) {
+int add_history(char* newHistory) {
     if (historyCount < 15)
         historyCount++;
     
@@ -661,7 +707,15 @@ int bla(char* lala) {
         i--;
     }
 
-    strncpy(history_buffer[0], lala, 128);
+    strncpy(history_buffer[0], newHistory, 128);
+    return 0;
+}
+
+int set_prio(int priority){
+    if (priority<0 || priority >3)
+        return -1;
+    proc->priority = priority;
+          
     return 0;
 }
 
