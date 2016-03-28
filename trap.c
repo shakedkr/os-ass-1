@@ -103,7 +103,7 @@ trap(struct trapframe *tf) {
     // If interrupts were on while locks held, would need to check nlock.
     if (proc && proc->state == RUNNING && tf->trapno == T_IRQ0 + IRQ_TIMER && ticks % QUANTA == 0 && SCHED_POLICY!=SCHED_FCFS) {
         if (SCHED_POLICY == SCHED_DML && proc->priority > 1)
-            proc->priority--;
+            proc->priority -=1;
         yield();
     }
 

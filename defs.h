@@ -130,6 +130,7 @@ void            scheduler_default(void) __attribute__((noreturn));
 void            scheduler_sml(void) __attribute__((noreturn));
 void            scheduler_dml(void) __attribute__((noreturn));
 int             set_prio(int );
+void            init_history(void);
 
 
 

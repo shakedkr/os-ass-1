@@ -2,6 +2,8 @@
 <configurationDescriptor version="97">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
+      <in>SMLsanity.asm</in>
+      <in>SMLsanity.c</in>
       <in>asm.h</in>
       <in>bio.c</in>
       <in>bootasm.S</in>
@@ -30,7 +32,6 @@
       <in>grep.asm</in>
       <in>grep.c</in>
       <in>ide.c</in>
-      <in>init.asm</in>
       <in>init.c</in>
       <in>initcode.S</in>
       <in>initcode.asm</in>
@@ -42,7 +43,6 @@
       <in>kill.asm</in>
       <in>kill.c</in>
       <in>lapic.c</in>
-      <in>ln.asm</in>
       <in>ln.c</in>
       <in>log.c</in>
       <in>ls.asm</in>
@@ -64,6 +64,8 @@
       <in>proc.h</in>
       <in>rm.asm</in>
       <in>rm.c</in>
+      <in>sanity.asm</in>
+      <in>sanity.c</in>
       <in>sh.asm</in>
       <in>sh.c</in>
       <in>spinlock.c</in>

@@ -19,7 +19,7 @@ exec(char *path, char **argv)
   pde_t *pgdir, *oldpgdir;
 
   if(SCHED_POLICY==SCHED_DML)
-         proc->priority = 2;
+      proc->priority = 2;
   
   begin_op();
   if((ip = namei(path)) == 0){

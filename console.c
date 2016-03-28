@@ -165,10 +165,17 @@ cgaputc(int c) {
             crt[pos] = ' ' | 0x0700;
         }
     } else if (c == LEFT) {
-        if (pos > 0) pos--;
+        if (pos > 0)
+            pos--;
     } else if (c == RIGHT) {
-        if (pos > 0) pos++;
-    } else if (c == UP) {
+        if(pos<25*80)
+            pos++;
+    }
+    
+    
+    
+    
+    else if (c == UP) {
         if (index<= historyCount ) {
            
             //delete current line

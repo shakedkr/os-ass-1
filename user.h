@@ -28,6 +28,7 @@ int wait2(int*,int*,int*);
 int yield();
 int add_history (char*);
 int set_prio(int);
+void init_history(void);
 
 // ulib.c
 int stat(char*, struct stat*);

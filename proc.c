@@ -28,7 +28,7 @@ static void wakeup1(void *chan);
 
 void
 pinit(void) {
-    if (SCHEDFLAG ==0){}
+    
     initlock(&ptable.lock, "ptable");
 }
 
@@ -183,7 +183,7 @@ fork(void) {
     np->stime = 0;
     np->retime =0;
     np->rutime =0;
-    np->priority = proc->priority;
+    np->priority = (np->parent)->priority;
     
     return pid;
 }
@@ -300,6 +300,7 @@ scheduler (void){
 
 void
 scheduler_dml(void) {
+   // panic ("dml");
    scheduler_sml();
 }
 
@@ -337,6 +338,7 @@ struct proc * getDMLproc()
 
 void
 scheduler_default(void) {
+  //  panic("default");
       
     struct proc *p;
     
@@ -373,7 +375,7 @@ scheduler_default(void) {
 
 void
 scheduler_fcfs(void) {
-
+    //panic ("fcfs");
     struct proc *p;
 
     
@@ -410,9 +412,8 @@ scheduler_fcfs(void) {
 
 void
 scheduler_sml(void) {
-      
+    //panic("sml");
      struct proc *p;
-
 
     for (;;) {
         // Enable interrupts on this processor.
@@ -422,13 +423,12 @@ scheduler_sml(void) {
         acquire(&ptable.lock);
        
         //find first runnable process
-         for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+        for (p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
             if ( p->state !=RUNNABLE)
                 continue;
 
-        /* find proccess with min creation time*/
-        
-            p=getDMLproc();
+        /* find proccess with best priopriy*/
+        p=getDMLproc();
 
         proc = p;
         switchuvm(p);
@@ -508,9 +508,11 @@ sleep(void *chan, struct spinlock *lk) {
     if (proc == 0)
         panic("sleep");
 
+    
     if (lk == 0)
         panic("sleep without lk");
 
+    
     // Must acquire ptable.lock in order to
     // change p->state and then call sched.
     // Once we hold ptable.lock, we can be
@@ -525,6 +527,7 @@ sleep(void *chan, struct spinlock *lk) {
     // Go to sleep.
     proc->chan = chan;
     proc->state = SLEEPING;
+    proc->priority =3;
 
     sched();
 
@@ -584,10 +587,12 @@ kill(int pid) {
 
             }
             release(&ptable.lock);
+            p->terminationTime = ticks;
             return 0;
         }
     }
     release(&ptable.lock);
+    
     return -1;
 }
 
@@ -637,7 +642,7 @@ int history(char * buffer, int historyId) {
         //cprintf("cpunt= %d historyid= %d i= %d \n" ,count,historyId,i);
 
         //TO-DO 
-    else if (history_buffer[historyId] == 0)
+    else if (history_buffer[historyId][0] == '\0')
         return -1;
 
     //cprintf("buffer=  %s \n" ,buffer);   
@@ -742,6 +747,13 @@ update_process_timing(void) {
     }
 }
 
+void
+    init_history(){
+        int i;
+        for(i=0;i<16;i++){
+            history_buffer[i][0] = '\0';
+        }
+    }
 
 
 

@@ -25,3 +25,4 @@
 #define SYS_yield 24
 #define SYS_add_history 25
 #define SYS_set_prio 26
+#define SYS_init_history 27

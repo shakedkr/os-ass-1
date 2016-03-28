@@ -142,3 +142,8 @@ int sys_set_prio(void){
 }
 
 
+int
+sys_init_history(void){
+  init_history();
+  return 0;
+}

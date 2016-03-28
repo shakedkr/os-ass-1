@@ -40,7 +40,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-fno-pic
 	-O
 	-nostdinc
@@ -67,7 +67,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-fno-pic
 	-nostdinc
 	-I.
@@ -117,7 +117,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	bio.o
@@ -151,7 +151,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	console.o
@@ -185,7 +185,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	exec.o
@@ -219,7 +219,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	file.o
@@ -253,7 +253,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	fs.o
@@ -287,7 +287,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	ide.o
@@ -321,7 +321,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	ioapic.o
@@ -355,7 +355,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	kalloc.o
@@ -389,7 +389,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	kbd.o
@@ -423,7 +423,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	lapic.o
@@ -457,7 +457,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	log.o
@@ -491,7 +491,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	main.o
@@ -525,7 +525,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	mp.o
@@ -559,7 +559,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	picirq.o
@@ -593,7 +593,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	pipe.o
@@ -627,7 +627,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	proc.o
@@ -661,7 +661,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	spinlock.o
@@ -695,7 +695,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	string.o
@@ -740,7 +740,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	syscall.o
@@ -774,7 +774,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	sysfile.o
@@ -808,7 +808,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	sysproc.o
@@ -842,7 +842,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	timer.o
@@ -887,7 +887,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	trap.o
@@ -921,7 +921,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	uart.o
@@ -966,7 +966,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	vm.o
@@ -1016,7 +1016,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-fno-pic
 	-nostdinc
 	-I.
@@ -1070,7 +1070,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-nostdinc
 	-I.
 	-c
@@ -1174,7 +1174,7 @@ called: /usr/bin/ld
 	-L/usr/lib/x86_64-linux-gnu
 	-L/usr/lib/../lib
 	-L/usr/lib/gcc/x86_64-linux-gnu/4.8/../../..
-	/tmp/cc2A6fmb.o
+	/tmp/ccINtoRe.o
 	-lgcc
 	--as-needed
 	-lgcc_s
@@ -1215,7 +1215,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	cat.o
@@ -1249,7 +1249,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	ulib.o
@@ -1294,7 +1294,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	printf.o
@@ -1328,7 +1328,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	umalloc.o
@@ -1385,7 +1385,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	echo.o
@@ -1442,7 +1442,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	forktest.o
@@ -1497,7 +1497,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	grep.o
@@ -1554,7 +1554,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	init.o
@@ -1611,7 +1611,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	kill.o
@@ -1668,7 +1668,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	ln.o
@@ -1725,7 +1725,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	ls.o
@@ -1782,7 +1782,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	mkdir.o
@@ -1839,7 +1839,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	rm.o
@@ -1896,7 +1896,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	sh.o
@@ -1953,7 +1953,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	stressfs.o
@@ -2010,7 +2010,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	usertests.o
@@ -2067,7 +2067,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	wc.o
@@ -2124,7 +2124,7 @@ called: gcc
 	-fno-omit-frame-pointer
 	-fno-stack-protector
 	-D
-	DEFAULT
+	SCHEDFLAG=0
 	-c
 	-o
 	zombie.o
@@ -2148,6 +2148,63 @@ called: ld
 	-o
 	_zombie
 	zombie.o
+	ulib.o
+	usys.o
+	printf.o
+	umalloc.o
+
+called: /usr/bin/gcc
+	/home/shaked/Documents/os-ass-1
+	gcc
+	-fno-stack-protector
+	-E
+	-x
+	c
+	/dev/null
+
+called: gcc
+	/home/shaked/Documents/os-ass-1
+	gcc
+	-fno-pic
+	-static
+	-fno-builtin
+	-fno-strict-aliasing
+	-fvar-tracking
+	-fvar-tracking-assignments
+	-O0
+	-g
+	-Wall
+	-MD
+	-gdwarf-2
+	-m32
+	-Werror
+	-fno-omit-frame-pointer
+	-fno-stack-protector
+	-D
+	SCHEDFLAG=0
+	-c
+	-o
+	sanity.o
+	sanity.c
+
+called: /usr/bin/ld
+	/home/shaked/Documents/os-ass-1
+	ld
+	-V
+
+called: ld
+	/home/shaked/Documents/os-ass-1
+	ld
+	-m
+	elf_i386
+	-N
+	-e
+	main
+	-Ttext
+	0
+	-o
+	_sanity
+	sanity.o
 	ulib.o
 	usys.o
 	printf.o

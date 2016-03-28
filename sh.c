@@ -14,6 +14,8 @@
 
 #define MAXARGS 10
 
+int isNum(char* s);
+
 struct cmd {
   int type;
 };
@@ -148,6 +150,7 @@ main(void)
   static char buf[100];
   int fd;
   char buffer[128];
+  init_history();
   //char bufferBackUp[128];
   //int currentPosition=0;  
  
@@ -184,23 +187,51 @@ main(void)
     int historyID;
     int h,i;
     if (buf[0]=='h' && buf[1]=='i' && buf[2]=='s' && buf[3]=='t' && buf[4]=='o' && buf[5]=='r' && buf[6]=='y' && buf[7]==' '){
-       
-        historyID = atoi (buf+8);
-                
-        i=historyID-1;
-        while (i>=0){       
-            h = history(buffer ,i);
-            
-            if (h == -1)
-                printf(1,"no history for the given id \n");
-            else if (h== -2)
-                printf(1,"history illegal \n");
-            else if (h == 0)    
-                printf(1,"%s",buffer);
-            i--;
-        }
-        continue;
+    int his_indx = 0;
+  // just history
+  if (buf[8] == '\0'){
+    while (his_indx<16){       
+      h = history(buffer ,his_indx);
+      if(h==-1){
+        break;
+      }
+      his_indx++;
+      printf(1,"%s",buffer);
     }
+  }
+  else{
+
+  //number after history
+    char* number = buf+8;
+    if (number[0] == '0'){
+      historyID = 0;
+    }
+    else{
+      historyID = isNum(number); 
+      if (historyID==-1){
+      printf(1," What you entered is not a number\n");
+        continue;
+      }
+    }
+    i=historyID-1;
+
+  //history call
+    while (i>=0){     
+      h = history(buffer ,i);
+      if(h==-2)
+        printf(1,"historyId illegal \n");
+      if(h==-1)
+        printf(1,"no history for the given id \n");
+      if(h!=0) break;
+      if (h == 0)    
+        printf(1,"%s",buffer);
+      i--;
+    }
+  }
+  continue;
+}   
+        
+    
     
     
     if(fork1() == 0)
@@ -529,4 +560,12 @@ nulterminate(struct cmd *cmd)
     break;
   }
   return cmd;
+}
+int
+isNum(char* s){
+  // printf(1,"entered isNum\n");
+  // printf(1,"this is s:%s\nthis is atoi(s):%d\n",s,atoi(s));
+  if(atoi(s)==0)
+    return -1;
+  return atoi(s);
 }

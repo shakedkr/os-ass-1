@@ -78,6 +78,7 @@ struct proc {
   int retime; // ready (runnable)time
   int rutime; // running time
   uint priority;
+  int terminationTime; 
 
 };
 
@@ -99,6 +100,10 @@ struct proc {
 
     #if SCHEDFLAG==SCHED_SML
     #define SCHED_POLICY SCHED_SML //SCHED_SML
+    #endif
+
+    #if SCHEDFLAG==SCHED_DML
+    #define SCHED_POLICY SCHED_DML //SCHED_DML
     #endif
 
 
