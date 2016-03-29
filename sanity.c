@@ -4,6 +4,7 @@
 
 void
 match_number (int num, char* ans){
+    
     switch (num){
         case 0:
             strcpy(ans, "CPU");
@@ -24,6 +25,11 @@ match_number (int num, char* ans){
 
 int
 main(int argc, char *argv[]) {
+    
+    //char* h ="12345678 \n";
+    //printf(1,"sizeof: %d strlen: %d \n" , sizeof(h) ,strlen(h));
+    
+    
     char tmp[10];
     int n, i, j, s;
     //printf(1, "%d", argc);
@@ -40,7 +46,9 @@ main(int argc, char *argv[]) {
         exit();
     }
     for (i = 0; i < 3 * n && pid; i++) {
+        set_prio(3);
         pid = fork();
+        
     }
     if (pid == 0) {
         pid = getpid();

@@ -1,7 +1,3 @@
-// Console input and output.
-// Input is from the keyboard or serial port.
-// Output is written to the screen and serial port.
-
 #include "types.h"
 #include "defs.h"
 #include "param.h"
@@ -13,9 +9,10 @@
 #include "mmu.h"
 #include "proc.h"
 #include "x86.h"
-//#include "user.h"
 
-int index = 0; //index of current place (for up and down)
+int index = 0; //index of current place in history(for up and down)
+int lCounter =0;
+
 static void consputc(int);
 
 static int panicked = 0;
@@ -76,26 +73,26 @@ cprintf(char *fmt, ...) {
             break;
         switch (c) {
             case 'd':
-                printint(*argp++, 10, 1);
-                break;
+            printint(*argp++, 10, 1);
+            break;
             case 'x':
             case 'p':
-                printint(*argp++, 16, 0);
-                break;
+            printint(*argp++, 16, 0);
+            break;
             case 's':
-                if ((s = (char*) *argp++) == 0)
-                    s = "(null)";
-                for (; *s; s++)
-                    consputc(*s);
-                break;
+            if ((s = (char*) *argp++) == 0)
+                s = "(null)";
+            for (; *s; s++)
+                consputc(*s);
+            break;
             case '%':
-                consputc('%');
-                break;
+            consputc('%');
+            break;
             default:
                 // Print unknown % sequence to draw attention.
-                consputc('%');
-                consputc(c);
-                break;
+            consputc('%');
+            consputc(c);
+            break;
         }
     }
     if (locking) release(&cons.lock);
@@ -143,10 +140,7 @@ struct {
 
 static void
 cgaputc(int c) {
-    //cprintf("index = %d \n" ,index);
-    //cprintf("history count= %d \n" ,historyCount);
     int pos;
-
     // Cursor position: col + 80*row.
     outb(CRTPORT, 14);
     pos = inb(CRTPORT + 1) << 8;
@@ -158,56 +152,28 @@ cgaputc(int c) {
         pos += 80 - pos % 80;
     else if (c == BACKSPACE) {
         if (pos > 0 && crt[pos] != 0) {
-            memmove(crt + pos - 1, crt + pos, 666);
+            memmove(crt + pos - 1, crt + pos, 128);
             --pos;
         } else if (pos > 0) {
             --pos;
             crt[pos] = ' ' | 0x0700;
         }
-    } else if (c == LEFT) {
+    } 
+    else if(c == UP || c == DOWN)
+    {
+        
+    }
+    else if (c == LEFT) {
         if (pos > 0)
             pos--;
     } else if (c == RIGHT) {
         if(pos<25*80)
             pos++;
     }
-    
-    
-    
-    
-    else if (c == UP) {
-        if (index<= historyCount ) {
-           
-            //delete current line
-            while (input.e != input.w && input.buf[(input.e - 1) % INPUT_BUF] != '\n') {
-                input.e--;
-                consputc(BACKSPACE);
-            }
-            cprintf(history_buffer[index]);
-            strncpy(input.buf , history_buffer[index],128);
-            
-            if (index<historyCount)
-             index++;
-        }
-
-    } else if (c == DOWN) {
-        if (index >= 0 && index<= historyCount) {
-           
-            //delete current line
-            while (input.e != input.w && input.buf[(input.e - 1) % INPUT_BUF] != '\n') {
-                input.e--;
-                consputc(BACKSPACE);
-            }
-            cprintf(history_buffer[index]);
-            strncpy(input.buf , history_buffer[index],128);
-            if (index>0)
-            index--;
-        }
-
-    } else {
+    else {
         if (pos > 0 && crt[pos] != 0) {
             // change 666 to number of letters
-            memmove(crt + pos + 1, crt + pos, 666);
+            memmove(crt + pos + 1, crt + pos, 128);
             memmove(crt + pos, poc, 1); //move all crt to right and write to pos
         }
         crt[pos++] = (c & 0xff) | 0x0700; // black on white
@@ -230,13 +196,16 @@ consputc(int c) {
         for (;;)
             ;
     }
-
     if (c == BACKSPACE) {
         uartputc('\b');
         uartputc(' ');
         uartputc('\b');
+    } else if(c == RIGHT){
+        ;
+    } else if(c == LEFT){
+        ;
     } else
-        uartputc(c);
+    uartputc(c);
     cgaputc(c);
 }
 
@@ -246,37 +215,71 @@ consputc(int c) {
 void
 consoleintr(int (*getc)(void)) {
     int c;
-
+    // char empty[128];
+    int destination_size=0;
     acquire(&input.lock);
     while ((c = getc()) >= 0) {
         switch (c) {
             case C('P'): // Process listing.
-                procdump();
-                break;
+            procdump();
+            break;
             case C('U'): // Kill line.
-                while (input.e != input.w &&
-                        input.buf[(input.e - 1) % INPUT_BUF] != '\n') {
-                    input.e--;
-                    consputc(BACKSPACE);
-                }
-                break;
+            while (input.e != input.w &&
+                input.buf[(input.e - 1) % INPUT_BUF] != '\n') {
+                input.e--;
+            consputc(BACKSPACE);
+        }
+        break;
             case C('H'): case '\x7f': // Backspace
+            if (input.e != input.w) {
+                input.e--;
+                consputc(BACKSPACE);
+            }
+            break;
+                case 228: // LEFT - tried with \xE4 also
                 if (input.e != input.w) {
+                // lCounter++;
                     input.e--;
-                    consputc(BACKSPACE);
+                    lCounter++;
+                    cgaputc(LEFT);
                 }
                 break;
+            case 229: // RIGHT - tried with \xE5 also
+            if(lCounter>0){
+                input.e++;
+                lCounter--;
+                cgaputc(RIGHT);
+            }
+            break;
+            case 226: // UP
+            if (index<= historyCount ) {
+                destination_size = strlen (history_buffer[index]);                
+                cprintf(history_buffer[index]);
+                strncpy(input.buf , history_buffer[index],destination_size-1);
+                if (index<historyCount) index++;
+                cgaputc(UP);
+            }
+            break;
+            case 227: // DOWN
+            if (index >= 0 && index<= historyCount) { 
+                destination_size = strlen (history_buffer[index]);
+                cprintf(history_buffer[index]); 
+                strncpy(input.buf , history_buffer[index],destination_size-1);
+                if (index>0) index--;
+                cgaputc(DOWN);
+            }
+            break;
             default:
-                if (c != 0 && input.e - input.r < INPUT_BUF) {
-                    c = (c == '\r') ? '\n' : c;
-                    input.buf[input.e++ % INPUT_BUF] = c;
-                    consputc(c);
-                    if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF) {
-                        input.w = input.e;
-                        wakeup(&input.r);
-                    }
+            if (c != 0 && input.e - input.r < INPUT_BUF) {
+                c = (c == '\r') ? '\n' : c;
+                input.buf[input.e++ % INPUT_BUF] = c;
+                consputc(c);
+                if (c == '\n' || c == C('D') || input.e == input.r + INPUT_BUF) {
+                    input.w = input.e;
+                    wakeup(&input.r);
                 }
-                break;
+            }
+            break;
         }
     }
     release(&input.lock);
@@ -345,3 +348,67 @@ consoleinit(void) {
     picenable(IRQ_KBD);
     ioapicenable(IRQ_KBD, 0);
 }
+
+/*
+
+            
+            case UP:  // UP
+            if(index<15){
+              index++;
+              // if(index==0) 
+              //   {
+              //     int k = 0;
+              //     int l = input.w;
+              //     while (l != input.e) {
+              //       empty[k] = input.buf[l % INPUT_BUF];
+              //       ++l;
+              //       ++k;
+              //     }
+              //   }
+                input.e = input.w;
+                int k = 0;
+                while (history_buffer[index][k] != '\0') {
+                  input.buf[input.e % INPUT_BUF] = history_buffer[index][k];
+                  ++input.e;
+                  ++k;
+                }
+              }
+              cgaputc(UP);
+            break;
+          case DOWN:  // DOWN
+            if(index > -1){
+            index--;
+            input.e = input.w;
+            int i = 0;
+            while (history_buffer[index][i] != '\000') {
+              input.buf[input.e % INPUT_BUF] = history_buffer[index][i];
+              ++input.e;
+              ++i;
+            }
+              cgaputc(DOWN);
+            }
+            break;
+
+
+
+            ------------------------------------------
+
+
+            else if(c == UP || c == DOWN)
+    {
+      pos -= (pos % 80);
+      pos += 2;
+      int i = 0;
+      while (history_buffer[index][i] != '\0') {
+        crt[pos] = (history_buffer[index][i] & 0xff) | 0x0700;
+        ++pos;
+        ++i;
+    }
+    int toClean = pos + 1;
+    while(crt[toClean])
+    {
+        crt[toClean] = ' ' | 0x0700;
+        ++toClean;
+    }
+}
+            */

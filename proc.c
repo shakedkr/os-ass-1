@@ -324,6 +324,7 @@ struct proc * getDMLproc()
 {
   struct proc *p = 0;
   struct proc * res = 0;
+ 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
 
@@ -433,12 +434,13 @@ scheduler_sml(void) {
         proc = p;
         switchuvm(p);
         proc->state = RUNNING;
-
+        //cprintf("proc: %d  is running \n" ,proc->pid);
+        
         swtch(&cpu->scheduler, proc->context);
         switchkvm();
 
         proc = 0;
-         }
+        }
         release(&ptable.lock);
 
     }
@@ -646,7 +648,7 @@ int history(char * buffer, int historyId) {
         return -1;
 
     //cprintf("buffer=  %s \n" ,buffer);   
-
+    
     strncpy(buffer, history_buffer[historyId], 128);
 
     return 0;
@@ -713,8 +715,19 @@ int add_history(char* newHistory) {
         strncpy(history_buffer[i + 1], history_buffer[i], 128);
         i--;
     }
-
+    //i=0;
+    //char c;
+    //c= newHistory[0];
     strncpy(history_buffer[0], newHistory, 128);
+    /*
+    while (c!='\n'){
+        history_buffer[0][i]=c;
+        i++;
+        c=newHistory[i];
+    }
+    newHistory[i]='\0';
+      */
+    
     return 0;
 }
 
